@@ -3,7 +3,7 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "89b968787bca198621a64f2f3a9a0209",
+  "assets/AssetManifest.json": "b04957166cc00dfbf1ee438199a6e4f0",
 "assets/FontManifest.json": "211cbb6fac7d91ae2ead93b81e54bfff",
 "assets/fonts/MaterialIcons-Regular.otf": "95db9098c58fd6db106f1116bae85a0b",
 "assets/lib/Assets/Chapters_Banners/analgesics.jpg": "a4dbb6d57e74989fc5fa10dcc5153024",
@@ -51,6 +51,7 @@ const RESOURCES = {
 "assets/lib/Assets/Others/rx_icon.png": "bc674464e55df20776ca5753a36b51ee",
 "assets/lib/Assets/Others/user.jpg": "4c207c8dbbc3daffe325a64ac170c027",
 "assets/lib/Assets/Others/user.png": "66d855b06cfcaca6b87a94992ea0d0e6",
+"assets/lib/Assets/Others/yathrib.jpg": "00d465f2a80d79e3ddcbe9f94b1e47d4",
 "assets/NOTICES": "a2408e575d3c8f831a0cae5ecef160dd",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "6d342eb68f170c97609e9da345464e5e",
 "assets/packages/flutter_inappwebview_quill/assets/t_rex_runner/t-rex.css": "5a8d0222407e388155d7d1395a75d5b9",
@@ -88,9 +89,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "188b7ac35da14114215b5f4b6ff8b7fc",
-"/": "188b7ac35da14114215b5f4b6ff8b7fc",
-"main.dart.js": "ba5a1a55b90bf423fdd21617b021365d",
+"index.html": "8dc9c997b7dc6b862fd11f869b0da7af",
+"/": "8dc9c997b7dc6b862fd11f869b0da7af",
+"main.dart.js": "3861c742f1e3f9941990ea835f3ba2d9",
 "manifest.json": "01503b56540502436110b869fd681f72",
 "version.json": "b1288b4733c3813ac778fa831e6666d9"
 };
