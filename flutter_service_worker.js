@@ -78,7 +78,7 @@ const RESOURCES = {
 "assets/packages/flutter_math_fork/lib/katex_fonts/fonts/KaTeX_Typewriter-Regular.ttf": "87f56927f1ba726ce0591955c8b3b42d",
 "assets/packages/math_keyboard/fonts/CustomKeyIcons.ttf": "b0bace3f25c2bd05862680e5ad4c6b54",
 "assets/packages/youtube_player_flutter_quill/assets/speedometer.webp": "50448630e948b5b3998ae5a5d112622b",
-"assets/shaders/ink_sparkle.frag": "cebe54871ac98ba630075b37297e56dc",
+"assets/shaders/ink_sparkle.frag": "190e547b1c0cbadc12a7bf06ad91fdb5",
 "canvaskit/canvaskit.js": "2bc454a691c631b07a9307ac4ca47797",
 "canvaskit/canvaskit.wasm": "bf50631470eb967688cca13ee181af62",
 "canvaskit/profiling/canvaskit.js": "38164e5a72bdad0faa4ce740c9b8e564",
@@ -89,9 +89,9 @@ const RESOURCES = {
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "890ef16df37ea2f00d45bde10dffcf0e",
-"/": "890ef16df37ea2f00d45bde10dffcf0e",
-"main.dart.js": "a4f43c83ea5d8c8a8ae10429b06c1c8b",
+"index.html": "25cd46cce3c968500c7678ceb5f1d837",
+"/": "25cd46cce3c968500c7678ceb5f1d837",
+"main.dart.js": "0e348fd82fc59b39c37c01aa9d58949f",
 "manifest.json": "01503b56540502436110b869fd681f72",
 "version.json": "b1288b4733c3813ac778fa831e6666d9"
 };
