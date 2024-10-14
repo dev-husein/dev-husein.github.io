@@ -1,11 +1,11 @@
 {
-    "name": "pharmacy_manager",
-    "short_name": "pharmacy_manager",
+    "name": "pharmacy manager",
+    "short_name": "ph manager",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "a powerful pharmacy management system",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
