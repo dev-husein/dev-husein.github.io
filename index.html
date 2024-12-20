@@ -31,6 +31,13 @@
 
   <title>pharmacy manager</title>
   <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/source-map@0.7.3/dist/source-map.js"></script>
+  <script>
+    // Initialize source map support
+    sourceMap.SourceMapConsumer.initialize({
+      "lib/third_party/source-map/lib/mappings.wasm": "https://cdn.jsdelivr.net/npm/source-map@0.7.3/lib/mappings.wasm"
+    });
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
