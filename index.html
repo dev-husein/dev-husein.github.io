@@ -35,9 +35,49 @@
   <script src="https://cdn.jsdelivr.net/npm/source-map@0.7.3/dist/source-map.js"></script>
   <script>
     // Initialize source map support
-    sourceMap.SourceMapConsumer.initialize({
-      "lib/third_party/source-map/lib/mappings.wasm": "https://cdn.jsdelivr.net/npm/source-map@0.7.3/lib/mappings.wasm"
-    });
+    let sourceMapConsumer = null;
+
+    async function initializeSourceMap() {
+      try {
+        const response = await fetch('main.dart.js.map');
+        const sourceMap = await response.json();
+        sourceMapConsumer = await new sourceMap.SourceMapConsumer(sourceMap);
+      } catch (e) {
+        console.error('Error loading source map:', e);
+      }
+    }
+
+    // Call this when the page loads
+    initializeSourceMap();
+
+    function demangleStackTrace(stackTrace) {
+      if (!sourceMapConsumer) return stackTrace;
+
+      try {
+        const lines = stackTrace.split('\n');
+        const demangledLines = lines.map(line => {
+          // Parse the stack trace line
+          const match = line.match(/@.*:(\d+):(\d+)/);
+          if (!match) return line;
+
+          const [, lineNo, colNo] = match;
+          const original = sourceMapConsumer.originalPositionFor({
+            line: parseInt(lineNo),
+            column: parseInt(colNo)
+          });
+
+          if (original.source) {
+            return `${original.name || 'anonymous'} (${original.source}:${original.line}:${original.column})`;
+          }
+          return line;
+        });
+
+        return demangledLines.join('\n');
+      } catch (e) {
+        console.error('Error demangling stack trace:', e);
+        return stackTrace;
+      }
+    }
   </script>
 </head>
 <body>
