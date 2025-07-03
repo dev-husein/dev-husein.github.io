@@ -18,12 +18,12 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="pharmacy manager">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="pharmacy_manager">
+  <meta name="apple-mobile-web-app-title" content="pharmacy manager">
   <meta name="source-map" content="true">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
@@ -33,6 +33,82 @@
   <title>pharmacy manager</title>
   <link rel="manifest" href="manifest.json">
   <script>
+    /**
+     * Enhanced stack trace demangling for Flutter web
+     * Attempts to convert minified JavaScript stack traces back to readable Dart traces
+     */
+    function demangleStackTrace(stackTrace) {
+      try {
+        // Split the stack trace into individual frames
+        const frames = stackTrace.split('\n');
+        const demangledFrames = [];
+        
+        for (const frame of frames) {
+          if (!frame.trim()) continue;
+          
+          // Try to extract meaningful information from each frame
+          const cleanedFrame = cleanStackFrame(frame);
+          demangledFrames.push(cleanedFrame);
+        }
+        
+        return demangledFrames.join('\n');
+      } catch (error) {
+        console.warn('Error demangling stack trace:', error);
+        return stackTrace; // Return original if demangling fails
+      }
+    }
+    
+    /**
+     * Clean individual stack frame to make it more readable
+     */
+    function cleanStackFrame(frame) {
+      try {
+        // Remove common Flutter/Dart internal paths that clutter the stack trace
+        let cleaned = frame
+          .replace(/packages\/flutter\/src\/[^\/]+\//g, '')
+          .replace(/dart:_[^\/]+/g, '')
+          .replace(/dart:core/g, '')
+          .replace(/dart:async/g, '')
+          .replace(/packages\/get\/[^\/]+\//g, '')
+          .trim();
+        
+        // If frame contains .dart file reference, try to make it more readable
+        if (cleaned.includes('.dart')) {
+          const dartMatch = cleaned.match(/(\w+\.dart):(\d+):(\d+)/);
+          if (dartMatch) {
+            const [, fileName, line, column] = dartMatch;
+            cleaned = cleaned.replace(dartMatch[0], `📄 ${fileName} (line ${line}:${column})`);
+          }
+        }
+        
+        // Remove minified function names that aren't helpful
+        cleaned = cleaned.replace(/\$\$\w+/g, '<anonymous>');
+        cleaned = cleaned.replace(/minified:\w+/g, '<minified>');
+        
+        return cleaned || frame; // Return original if cleaning resulted in empty string
+      } catch (error) {
+        return frame; // Return original frame if cleaning fails
+      }
+    }
+    
+    /**
+     * Improved error formatting for better debugging
+     */
+    function formatError(error, stackTrace) {
+      const platform = navigator.userAgent.includes('Mobile') ? 'Mobile Web' : 'Web';
+      const timestamp = new Date().toISOString();
+      
+      return {
+        error: `${error}\nPlatform: ${platform}`,
+        stackTrace: demangleStackTrace(stackTrace),
+        timestamp: timestamp,
+        userAgent: navigator.userAgent
+      };
+    }
+    
+    // Make functions available globally
+    window.demangleStackTrace = demangleStackTrace;
+    window.formatError = formatError;
   </script>
 </head>
 <body>
