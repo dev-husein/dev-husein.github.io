@@ -3,11 +3,11 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "46990a99ddcdde787d0fd1bed482c1a6",
-"version.json": "46f82dedd550e7b85ebf692317af34ac",
+const RESOURCES = {"flutter_bootstrap.js": "775deaed3f06686da299ad809731dc82",
+"version.json": "9530f488d6d7db504e779cf23bc21574",
 "index.html": "87acc6372324a79170098240599ec46f",
 "/": "87acc6372324a79170098240599ec46f",
-"main.dart.js": "3f8967dfd3dd6f8342a77f7733e47f5f",
+"main.dart.js": "6dc99b6ed88eeef0a32a607d2c6a8ee0",
 "sqlite3.wasm": "f08450f1d5a088a01cec0eb541c3aeca",
 "flutter.js": "24bc71911b75b5f8135c949e27a2984e",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
@@ -18,7 +18,7 @@ const RESOURCES = {"flutter_bootstrap.js": "46990a99ddcdde787d0fd1bed482c1a6",
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "manifest.json": "bef1c8000e4050228d096e99f8557c70",
 "assets/shorebird.yaml": "8a6cc29d444eb0f524471e8cbbe90089",
-"assets/NOTICES": "650f786ab683b0a8c53a6007e242f236",
+"assets/NOTICES": "f8fe8985b58e97728cdcd152ccbb395e",
 "assets/image/img.png": "5ac8b53bd9b5f042119d061659515d22",
 "assets/image/new.png": "2cf36bbe15d549d64b3092f6b2ad25bf",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
@@ -27,7 +27,7 @@ const RESOURCES = {"flutter_bootstrap.js": "46990a99ddcdde787d0fd1bed482c1a6",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
 "assets/shaders/stretch_effect.frag": "40d68efbbf360632f614c731219e95f0",
 "assets/AssetManifest.bin": "dfd3f9af39516e6f0da8755143783a81",
-"assets/fonts/MaterialIcons-Regular.otf": "3d49faab30f3d80bb01a919bfdcf5ede",
+"assets/fonts/MaterialIcons-Regular.otf": "728c0205249539c7c36ae208c5597e9d",
 "assets/assets/images/search.svg": "4c2ea409128ab6a08075ddc6305dfa63",
 "assets/assets/images/organica_body.png": "b4ff1ef0abf00c8d866cc1a0cdaf9d6a",
 "assets/assets/images/logwwo.png": "68b9430da5214746f47ef9d7724daa17",
@@ -223,5 +223,3 @@ function onlineFirst(event) {
     })
   );
 }
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="f50310ce-32b3-591d-bd33-af0b47884f99")}catch(e){}}();
-//# debugId=f50310ce-32b3-591d-bd33-af0b47884f99
