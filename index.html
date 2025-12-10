@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Pharmacy Management System - Professional drug inventory and sales management">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="color-scheme" content="dark light">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pharmacy Manager">
+  <meta name="source-map" content="true">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>Pharmacy Manager</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  
+  <style>
+    /* Dark mode compatible loading screen */
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #2196F3;
+      --accent-color: #FF9800;
+      --background-color: #1a1a1a;
+      --surface-color: #2d2d2d;
+      --text-color: #ffffff;
+      --text-secondary: #b0b0b0;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --background-color: #f5f5f5;
+        --surface-color: #ffffff;
+        --text-color: #333333;
+        --text-secondary: #666666;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--background-color);
+      color: var(--text-color);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .loading-container {
+      text-align: center;
+      max-width: 400px;
+      padding: 2rem;
+    }
+
+    .logo-container {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      box-shadow: 0 8px 32px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo::before {
+      content: "💊";
+      font-size: 2.5rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .logo::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    .app-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .app-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--surface-color);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--surface-color);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+      animation: progress 3s ease-in-out infinite;
+    }
+
+    .loading-steps {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .step {
+      width: 8px;
+      height: 8px;
+      background: var(--surface-color);
+      border-radius: 50%;
+      animation: stepPulse 1.5s ease-in-out infinite;
+    }
+
+    .step:nth-child(1) { animation-delay: 0s; }
+    .step:nth-child(2) { animation-delay: 0.2s; }
+    .step:nth-child(3) { animation-delay: 0.4s; }
+
+    .error-container {
+      display: none;
+      background: rgba(244, 67, 54, 0.1);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      color: #f44336;
+    }
+
+    .retry-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s ease;
+    }
+
+    .retry-button:hover {
+      background: #45a049;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+      100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    }
+
+    @keyframes progress {
+      0% { width: 0%; }
+      50% { width: 70%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes stepPulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .loading-container {
+        padding: 1rem;
+      }
+      
+      .logo {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .logo::before {
+        font-size: 2rem;
+      }
+      
+      .app-title {
+        font-size: 1.5rem;
+      }
+      
+      .app-subtitle {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Hide loading screen when Flutter is ready */
+    .flutter-ready {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-container">
+    <div class="logo-container">
+      <div class="logo"></div>
+      <h1 class="app-title">Pharmacy Manager</h1>
+      <p class="app-subtitle">Professional Drug Management System</p>
+    </div>
+    
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Initializing application...</p>
+    
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    
+    <div class="loading-steps">
+      <div class="step"></div>
+      <div class="step"></div>
+      <div class="step"></div>
+    </div>
+    
+    <div id="error-container" class="error-container">
+      <p>Failed to load application. Please check your connection and try again.</p>
+      <button class="retry-button" onclick="retryLoading()">Retry</button>
+    </div>
+  </div>
+
+  <script src="flutter_bootstrap.js" async></script>
+  
+  <script>
+    /**
+     * Enhanced loading management and error handling for Flutter web
+     */
+    
+    // Loading state management
+    let loadingState = {
+      isLoading: true,
+      progress: 0,
+      error: null,
+      startTime: Date.now()
+    };
+
+    // Performance monitoring
+    const performanceMetrics = {
+      loadStart: Date.now(),
+      flutterReady: null,
+      totalLoadTime: null
+    };
+
+    /**
+     * Enhanced stack trace demangling for Flutter web
+     * Attempts to convert minified JavaScript stack traces back to readable Dart traces
+     */
+    function demangleStackTrace(stackTrace) {
+      try {
+        // Split the stack trace into individual frames
+        const frames = stackTrace.split('\n');
+        const demangledFrames = [];
+        
+        for (const frame of frames) {
+          if (!frame.trim()) continue;
+          
+          // Try to extract meaningful information from each frame
+          const cleanedFrame = cleanStackFrame(frame);
+          demangledFrames.push(cleanedFrame);
+        }
+        
+        return demangledFrames.join('\n');
+      } catch (error) {
+        console.warn('Error demangling stack trace:', error);
+        return stackTrace; // Return original if demangling fails
+      }
+    }
+    
+    /**
+     * Clean individual stack frame to make it more readable
+     */
+    function cleanStackFrame(frame) {
+      try {
+        // Remove common Flutter/Dart internal paths that clutter the stack trace
+        let cleaned = frame
+          .replace(/packages\/flutter\/src\/[^\/]+\//g, '')
+          .replace(/dart:_[^\/]+/g, '')
+          .replace(/dart:core/g, '')
+          .replace(/dart:async/g, '')
+          .replace(/packages\/get\/[^\/]+\//g, '')
+          .trim();
+        
+        // If frame contains .dart file reference, try to make it more readable
+        if (cleaned.includes('.dart')) {
+          const dartMatch = cleaned.match(/(\w+\.dart):(\d+):(\d+)/);
+          if (dartMatch) {
+            const [, fileName, line, column] = dartMatch;
+            cleaned = cleaned.replace(dartMatch[0], `📄 ${fileName} (line ${line}:${column})`);
+          }
+        }
+        
+        // Remove minified function names that aren't helpful
+        cleaned = cleaned.replace(/\$\$\w+/g, '<anonymous>');
+        cleaned = cleaned.replace(/minified:\w+/g, '<minified>');
+        
+        return cleaned || frame; // Return original if cleaning resulted in empty string
+      } catch (error) {
+        return frame; // Return original frame if cleaning fails
+      }
+    }
+    
+    /**
+     * Improved error formatting for better debugging
+     */
+    function formatError(error, stackTrace) {
+      const platform = navigator.userAgent.includes('Mobile') ? 'Mobile Web' : 'Web';
+      const timestamp = new Date().toISOString();
+      
+      return {
+        error: `${error}\nPlatform: ${platform}`,
+        stackTrace: demangleStackTrace(stackTrace),
+        timestamp: timestamp,
+        userAgent: navigator.userAgent
+      };
+    }
+
+    /**
+     * Update loading progress and text
+     */
+    function updateLoadingProgress(progress, text) {
+      const progressFill = document.querySelector('.progress-fill');
+      const loadingText = document.querySelector('.loading-text');
+      
+      if (progressFill) {
+        progressFill.style.width = `${progress}%`;
+      }
+      
+      if (loadingText && text) {
+        loadingText.textContent = text;
+      }
+      
+      loadingState.progress = progress;
+    }
+
+    /**
+     * Show error state
+     */
+    function showError(message) {
+      const errorContainer = document.getElementById('error-container');
+      const errorText = errorContainer.querySelector('p');
+      
+      if (errorText) {
+        errorText.textContent = message;
+      }
+      
+      errorContainer.style.display = 'block';
+      loadingState.error = message;
+    }
+
+    /**
+     * Hide error state
+     */
+    function hideError() {
+      const errorContainer = document.getElementById('error-container');
+      errorContainer.style.display = 'none';
+      loadingState.error = null;
+    }
+
+    /**
+     * Retry loading
+     */
+    function retryLoading() {
+      hideError();
+      loadingState.isLoading = true;
+      loadingState.progress = 0;
+      
+      // Reload the page
+      window.location.reload();
+    }
+
+    /**
+     * Hide loading screen when Flutter is ready
+     */
+    function hideLoadingScreen() {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.classList.add('flutter-ready');
+        
+        // Remove loading screen after animation
+        setTimeout(() => {
+          loadingScreen.remove();
+        }, 500);
+      }
+      
+      performanceMetrics.flutterReady = Date.now();
+      performanceMetrics.totalLoadTime = performanceMetrics.flutterReady - performanceMetrics.loadStart;
+      
+      console.log(`🚀 Flutter app loaded in ${performanceMetrics.totalLoadTime}ms`);
+    }
+
+    /**
+     * Initialize loading sequence
+     */
+    function initializeLoading() {
+      // Simulate loading progress
+      let progress = 0;
+      const loadingSteps = [
+        'Initializing Flutter engine...',
+        'Loading application assets...',
+        'Preparing user interface...',
+        'Establishing connections...',
+        'Almost ready...'
+      ];
+      
+      const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        const stepIndex = Math.floor(progress / 20);
+        const text = loadingSteps[Math.min(stepIndex, loadingSteps.length - 1)];
+        
+        updateLoadingProgress(Math.min(progress, 95), text);
+        
+        if (progress >= 95) {
+          clearInterval(progressInterval);
+        }
+      }, 200);
+    }
+
+    /**
+     * Check if Flutter is ready
+     */
+    function checkFlutterReady() {
+      if (window.flutter_inappwebview || window.flutter_web_optimizer) {
+        hideLoadingScreen();
+        return true;
+      }
+      
+      // Check for Flutter app container
+      const flutterContainer = document.querySelector('#flutter_target');
+      if (flutterContainer && flutterContainer.children.length > 0) {
+        hideLoadingScreen();
+        return true;
+      }
+      
+      return false;
+    }
+
+    /**
+     * Setup Flutter ready detection
+     */
+    function setupFlutterDetection() {
+      // Check periodically for Flutter readiness
+      const checkInterval = setInterval(() => {
+        if (checkFlutterReady()) {
+          clearInterval(checkInterval);
+        }
+      }, 100);
+
+      // Also listen for Flutter events
+      window.addEventListener('flutter-first-frame', () => {
+        hideLoadingScreen();
+      });
+
+      // Fallback timeout
+      setTimeout(() => {
+        if (loadingState.isLoading) {
+          console.warn('Flutter loading timeout, attempting to hide loading screen');
+          hideLoadingScreen();
+        }
+      }, 10000); // 10 second timeout
+    }
+
+    /**
+     * Initialize everything when DOM is ready
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeLoading();
+      setupFlutterDetection();
+      
+      // Performance monitoring
+      if ('performance' in window) {
+        window.addEventListener('load', () => {
+          const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+          console.log(`📊 Page load time: ${loadTime}ms`);
+        });
+      }
+    });
+
+    // Make functions available globally
+    window.demangleStackTrace = demangleStackTrace;
+    window.formatError = formatError;
+    window.hideLoadingScreen = hideLoadingScreen;
+    window.showError = showError;
+    window.retryLoading = retryLoading;
+  </script>
+</body>
+</html>
