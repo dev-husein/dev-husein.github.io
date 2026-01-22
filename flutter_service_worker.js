@@ -3,11 +3,11 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "d2e6986b14208ec1d2103f9c613e5b22",
-"version.json": "385fd82d7245d603b3a741e2bc2091c9",
+const RESOURCES = {"flutter_bootstrap.js": "b15c6a83d8cf7c7584d247d83df2a44f",
+"version.json": "ac034c8cf7d40989a5b806f9be91545f",
 "index.html": "87acc6372324a79170098240599ec46f",
 "/": "87acc6372324a79170098240599ec46f",
-"main.dart.js": "d64c0200be4427776a078b26d26a1904",
+"main.dart.js": "76a67117bfe19aeb540513f4afdbbaf1",
 "sqlite3.wasm": "f08450f1d5a088a01cec0eb541c3aeca",
 "flutter.js": "24bc71911b75b5f8135c949e27a2984e",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
@@ -27,7 +27,7 @@ const RESOURCES = {"flutter_bootstrap.js": "d2e6986b14208ec1d2103f9c613e5b22",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
 "assets/shaders/stretch_effect.frag": "40d68efbbf360632f614c731219e95f0",
 "assets/AssetManifest.bin": "dfd3f9af39516e6f0da8755143783a81",
-"assets/fonts/MaterialIcons-Regular.otf": "02f6a53d349fb97e71b6de450cf14f4b",
+"assets/fonts/MaterialIcons-Regular.otf": "d06ac32518777221141b7c6946ac1b0a",
 "assets/assets/images/search.svg": "4c2ea409128ab6a08075ddc6305dfa63",
 "assets/assets/images/organica_body.png": "b4ff1ef0abf00c8d866cc1a0cdaf9d6a",
 "assets/assets/images/logwwo.png": "68b9430da5214746f47ef9d7724daa17",
@@ -223,5 +223,5 @@ function onlineFirst(event) {
     })
   );
 }
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="cb3030b0-cc2d-586d-a0cc-b7736afa1567")}catch(e){}}();
-//# debugId=cb3030b0-cc2d-586d-a0cc-b7736afa1567
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="23f9716d-a5d3-51c1-944e-1f5aa2e50263")}catch(e){}}();
+//# debugId=23f9716d-a5d3-51c1-944e-1f5aa2e50263
