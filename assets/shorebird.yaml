@@ -11,4 +11,4 @@ app_id: 4e9f1b2c-fd31-4a2a-aa21-ab28ef437f85
 # If auto_update: false, you will need to use package:shorebird_code_push to trigger updates.
 # https://pub.dev/packages/shorebird_code_push
 # We handle updates manually via the ShorebirdUpdateService.
-auto_update: false
+auto_update: true
