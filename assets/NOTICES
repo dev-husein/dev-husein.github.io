@@ -1291,7 +1291,10 @@ cpu_features
 fake_async
 flatbuffers
 gtest-parallel
+preact_signals
 retry
+signals_core
+signals_flutter
 spirv-cross
 spirv-tools
 swiftshader
