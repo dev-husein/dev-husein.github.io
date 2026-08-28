@@ -39,11 +39,60 @@ if (!window._flutter) {
 }
 _flutter.buildConfig = {"engineRevision":"5f77625673248ee5846fbcaf5d3e1a3878386fd7","wasmHashes":{"wimp.wasm":"7474f6074c42c4be503c9059c9b5058e468a68a8917ac6c3607f0da4922f7e5a","webparagraph/canvaskit.wasm":"7a61c4ad71781875a80bbfc5ee6e49686dd190d629e0fe986d3ecc05ada58856","skwasm.wasm":"a957befea55cf597eeebcf3286f1b88f463f3ad8bfc13e55aa8f5d34cd2ade4d","chromium/canvaskit.wasm":"ba4024133403777f41c709b9e76e9f4bdb76c73d33adba8645527a59d815d824","canvaskit.wasm":"2898c0795cf4a694e86ee3445c7414c2503fbcb46967154762f50ebde988da04","skwasm_heavy.wasm":"781a14fc7e9cd387ee6df4a056f62af7e940c60cc42ce04571cc2e810042c588"},"builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
-_flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "1315739166" /* Flutter's service worker is deprecated and will be removed in a future Flutter release. */
-  }
-});
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0b9bca50-9421-5ca0-a879-dc7dae59dc1f")}catch(e){}}();
 
-//# debugId=0b9bca50-9421-5ca0-a879-dc7dae59dc1f
+(function () {
+  var loader = window.__pharmacyLoader || {};
+  var didHide = false;
+  var firstFrameHandler = null;
+
+  function setMessage(message) {
+    if (typeof loader.setLoadingMessage === 'function') {
+      loader.setLoadingMessage(message);
+    }
+  }
+
+  function showError(message) {
+    if (typeof loader.showError === 'function') {
+      loader.showError(message);
+    }
+  }
+
+  function hideLoadingScreen() {
+    if (didHide) {
+      return;
+    }
+    didHide = true;
+    if (firstFrameHandler) {
+      window.removeEventListener('flutter-first-frame', firstFrameHandler);
+      firstFrameHandler = null;
+    }
+    if (typeof loader.hideLoadingScreen === 'function') {
+      loader.hideLoadingScreen();
+    }
+  }
+
+  firstFrameHandler = function () {
+    hideLoadingScreen();
+  };
+  window.addEventListener('flutter-first-frame', firstFrameHandler, { once: true });
+
+  setMessage('جاري تحميل نقطة الدخول...');
+
+  _flutter.loader.load({
+    onEntrypointLoaded: async function (engineInitializer) {
+      try {
+        setMessage('جاري تهيئة المحرك...');
+        var appRunner = await engineInitializer.initializeEngine();
+
+        setMessage('جاري تشغيل التطبيق...');
+        await appRunner.runApp();
+      } catch (error) {
+        console.error('Flutter web bootstrap failed:', error);
+        showError('تعذر تشغيل التطبيق. تحقق من الاتصال ثم أعد المحاولة.');
+      }
+    }
+  });
+})();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="295df0e7-eced-5a15-b505-e2e00e5e7ced")}catch(e){}}();
+
+//# debugId=295df0e7-eced-5a15-b505-e2e00e5e7ced

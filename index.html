@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,49 +18,36 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Pharmacy Management System - Professional drug inventory and sales management">
+  <meta name="description" content="نظام إدارة الصيدليات - إدارة المخزون والمبيعات">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a1a1a">
-  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#F8FAFC">
+  <meta name="color-scheme" content="light">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Pharmacy Manager">
-  <meta name="source-map" content="true">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="مدير الصيدلية">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>Pharmacy Manager</title>
+  <title>مدير الصيدلية</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- Preload critical resources -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
-  <link rel="dns-prefetch" href="//fonts.googleapis.com">
-  
-  <style>
-    /* Dark mode compatible loading screen */
-    :root {
-      --primary-color: #4CAF50;
-      --secondary-color: #2196F3;
-      --accent-color: #FF9800;
-      --background-color: #1a1a1a;
-      --surface-color: #2d2d2d;
-      --text-color: #ffffff;
-      --text-secondary: #b0b0b0;
-      --shadow-color: rgba(0, 0, 0, 0.3);
-    }
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    @media (prefers-color-scheme: light) {
-      :root {
-        --background-color: #f5f5f5;
-        --surface-color: #ffffff;
-        --text-color: #333333;
-        --text-secondary: #666666;
-        --shadow-color: rgba(0, 0, 0, 0.1);
-      }
+  <style>
+    :root {
+      --primary-color: #2196F3;
+      --background-color: #F8FAFC;
+      --surface-color: #FFFFFF;
+      --text-color: #0F172A;
+      --text-secondary: #475569;
+      --error-color: #DC2626;
+      --shadow-color: rgba(15, 23, 42, 0.08);
     }
 
     * {
@@ -69,503 +56,236 @@
       box-sizing: border-box;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Naskh Arabic', sans-serif;
       background: var(--background-color);
       color: var(--text-color);
       overflow: hidden;
-      height: 100vh;
+    }
+
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.3s ease;
+      background: var(--background-color);
+      transition: opacity 0.35s ease;
     }
 
-    .loading-container {
+    #loading-screen.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-card {
+      width: min(100%, 400px);
+      margin: 1rem;
+      padding: 2rem 1.5rem;
       text-align: center;
-      max-width: 400px;
-      padding: 2rem;
-    }
-
-    .logo-container {
-      margin-bottom: 2rem;
-      position: relative;
+      background: var(--surface-color);
+      border-radius: 16px;
+      box-shadow: 0 12px 32px var(--shadow-color);
     }
 
     .logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      border-radius: 20px;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.25rem;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1rem;
-      box-shadow: 0 8px 32px var(--shadow-color);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logo::before {
-      content: "💊";
-      font-size: 2.5rem;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    .logo::after {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      animation: shine 3s ease-in-out infinite;
+      background: linear-gradient(135deg, var(--primary-color), #1565C0);
+      box-shadow: 0 8px 24px rgba(33, 150, 243, 0.25);
+      font-size: 2rem;
     }
 
     .app-title {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      margin-bottom: 0.35rem;
+      color: var(--text-color);
     }
 
     .app-subtitle {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-secondary);
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
     }
 
     .loading-spinner {
-      width: 60px;
-      height: 60px;
-      border: 4px solid var(--surface-color);
-      border-top: 4px solid var(--primary-color);
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 1rem;
+      border: 3px solid #E2E8F0;
+      border-top-color: var(--primary-color);
       border-radius: 50%;
-      margin: 0 auto 1.5rem;
-      animation: spin 1s linear infinite;
+      animation: spin 0.9s linear infinite;
     }
 
     .loading-text {
       font-size: 0.9rem;
       color: var(--text-secondary);
-      margin-bottom: 1rem;
     }
-
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: var(--surface-color);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 1rem;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-      border-radius: 2px;
-      animation: progress 3s ease-in-out infinite;
-    }
-
-    .loading-steps {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .step {
-      width: 8px;
-      height: 8px;
-      background: var(--surface-color);
-      border-radius: 50%;
-      animation: stepPulse 1.5s ease-in-out infinite;
-    }
-
-    .step:nth-child(1) { animation-delay: 0s; }
-    .step:nth-child(2) { animation-delay: 0.2s; }
-    .step:nth-child(3) { animation-delay: 0.4s; }
 
     .error-container {
       display: none;
-      background: rgba(244, 67, 54, 0.1);
-      border: 1px solid rgba(244, 67, 54, 0.3);
-      border-radius: 8px;
+      margin-top: 1.25rem;
       padding: 1rem;
-      margin-top: 1rem;
-      color: #f44336;
+      border-radius: 10px;
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      background: rgba(220, 38, 38, 0.06);
+      color: var(--error-color);
+      text-align: center;
+    }
+
+    .error-container.is-visible {
+      display: block;
+    }
+
+    .error-container p {
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .retry-button {
       background: var(--primary-color);
-      color: white;
+      color: #fff;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
+      border-radius: 8px;
+      padding: 0.55rem 1.1rem;
       font-size: 0.9rem;
-      margin-top: 0.5rem;
-      transition: background-color 0.2s ease;
+      cursor: pointer;
+      min-height: 40px;
+      min-width: 88px;
     }
 
-    .retry-button:hover {
-      background: #45a049;
+    .retry-button:hover,
+    .retry-button:focus-visible {
+      background: #1976D2;
+      outline: 2px solid #90CAF9;
+      outline-offset: 2px;
     }
 
-    /* Animations */
+    .loading-spinner.is-hidden {
+      display: none;
+    }
+
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-
-    @keyframes shine {
-      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-      50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-      100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    }
-
-    @keyframes progress {
-      0% { width: 0%; }
-      50% { width: 70%; }
-      100% { width: 100%; }
-    }
-
-    @keyframes stepPulse {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* Responsive design */
-    @media (max-width: 480px) {
-      .loading-container {
-        padding: 1rem;
+    @media (prefers-reduced-motion: reduce) {
+      #loading-screen,
+      .loading-spinner {
+        animation: none !important;
+        transition: none !important;
       }
-      
-      .logo {
-        width: 60px;
-        height: 60px;
-      }
-      
-      .logo::before {
-        font-size: 2rem;
-      }
-      
-      .app-title {
-        font-size: 1.5rem;
-      }
-      
-      .app-subtitle {
-        font-size: 0.9rem;
-      }
-    }
-
-    /* Hide loading screen when Flutter is ready */
-    .flutter-ready {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
     }
   </style>
 </head>
 <body>
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="loading-container">
-    <div class="logo-container">
-      <div class="logo"></div>
-      <h1 class="app-title">Pharmacy Manager</h1>
-      <p class="app-subtitle">Professional Drug Management System</p>
-    </div>
-    
-    <div class="loading-spinner"></div>
-    <p class="loading-text">Initializing application...</p>
-    
-    <div class="progress-bar">
-      <div class="progress-fill"></div>
-    </div>
-    
-    <div class="loading-steps">
-      <div class="step"></div>
-      <div class="step"></div>
-      <div class="step"></div>
-    </div>
-    
-    <div id="error-container" class="error-container">
-      <p>Failed to load application. Please check your connection and try again.</p>
-      <button class="retry-button" onclick="retryLoading()">Retry</button>
+  <div id="loading-screen" role="status" aria-live="polite" aria-busy="true">
+    <div class="loading-card">
+      <div class="logo" aria-hidden="true">💊</div>
+      <h1 class="app-title">مدير الصيدلية</h1>
+      <p class="app-subtitle">نظام احترافي لإدارة الأدوية والمبيعات</p>
+
+      <div id="loading-spinner" class="loading-spinner" aria-hidden="true"></div>
+      <p id="loading-text" class="loading-text">جاري تحميل التطبيق...</p>
+
+      <div id="error-container" class="error-container" role="alert" aria-live="assertive">
+        <p id="error-text">تعذر تحميل التطبيق. تحقق من الاتصال ثم أعد المحاولة.</p>
+        <button type="button" class="retry-button" id="retry-button">إعادة المحاولة</button>
+      </div>
     </div>
   </div>
 
-  <script src="flutter_bootstrap.js" async></script>
-  
   <script>
-    /**
-     * Enhanced loading management and error handling for Flutter web
-     */
-    
-    // Loading state management
-    let loadingState = {
-      isLoading: true,
-      progress: 0,
-      error: null,
-      startTime: Date.now()
-    };
+    (function () {
+      var loadingScreen = document.getElementById('loading-screen');
+      var loadingText = document.getElementById('loading-text');
+      var loadingSpinner = document.getElementById('loading-spinner');
+      var errorContainer = document.getElementById('error-container');
+      var errorText = document.getElementById('error-text');
+      var retryButton = document.getElementById('retry-button');
+      var isComplete = false;
+      var hideTimer = null;
 
-    // Performance monitoring
-    const performanceMetrics = {
-      loadStart: Date.now(),
-      flutterReady: null,
-      totalLoadTime: null
-    };
-
-    /**
-     * Enhanced stack trace demangling for Flutter web
-     * Attempts to convert minified JavaScript stack traces back to readable Dart traces
-     */
-    function demangleStackTrace(stackTrace) {
-      try {
-        // Split the stack trace into individual frames
-        const frames = stackTrace.split('\n');
-        const demangledFrames = [];
-        
-        for (const frame of frames) {
-          if (!frame.trim()) continue;
-          
-          // Try to extract meaningful information from each frame
-          const cleanedFrame = cleanStackFrame(frame);
-          demangledFrames.push(cleanedFrame);
+      function setLoadingMessage(message) {
+        if (loadingText) {
+          loadingText.textContent = message;
         }
-        
-        return demangledFrames.join('\n');
-      } catch (error) {
-        console.warn('Error demangling stack trace:', error);
-        return stackTrace; // Return original if demangling fails
       }
-    }
-    
-    /**
-     * Clean individual stack frame to make it more readable
-     */
-    function cleanStackFrame(frame) {
-      try {
-        // Remove common Flutter/Dart internal paths that clutter the stack trace
-        let cleaned = frame
-          .replace(/packages\/flutter\/src\/[^\/]+\//g, '')
-          .replace(/dart:_[^\/]+/g, '')
-          .replace(/dart:core/g, '')
-          .replace(/dart:async/g, '')
-          .replace(/packages\/get\/[^\/]+\//g, '')
-          .trim();
-        
-        // If frame contains .dart file reference, try to make it more readable
-        if (cleaned.includes('.dart')) {
-          const dartMatch = cleaned.match(/(\w+\.dart):(\d+):(\d+)/);
-          if (dartMatch) {
-            const [, fileName, line, column] = dartMatch;
-            cleaned = cleaned.replace(dartMatch[0], `📄 ${fileName} (line ${line}:${column})`);
+
+      function showError(message) {
+        if (isComplete) {
+          return;
+        }
+        if (loadingSpinner) {
+          loadingSpinner.classList.add('is-hidden');
+        }
+        if (errorText && message) {
+          errorText.textContent = message;
+        }
+        if (errorContainer) {
+          errorContainer.classList.add('is-visible');
+        }
+        if (loadingScreen) {
+          loadingScreen.setAttribute('aria-busy', 'false');
+        }
+      }
+
+      function hideLoadingScreen() {
+        if (isComplete || !loadingScreen) {
+          return;
+        }
+        isComplete = true;
+        loadingScreen.classList.add('is-hidden');
+        loadingScreen.setAttribute('aria-busy', 'false');
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+        }
+        hideTimer = setTimeout(function () {
+          if (loadingScreen && loadingScreen.parentNode) {
+            loadingScreen.parentNode.removeChild(loadingScreen);
+          }
+        }, 350);
+      }
+
+      function retryLoading() {
+        window.location.reload();
+      }
+
+      if (retryButton) {
+        retryButton.addEventListener('click', retryLoading);
+      }
+
+      window.__pharmacyLoader = {
+        setLoadingMessage: setLoadingMessage,
+        showError: showError,
+        hideLoadingScreen: hideLoadingScreen,
+        retryLoading: retryLoading
+      };
+
+      window.addEventListener('error', function (event) {
+        if (event && event.target && event.target.tagName === 'SCRIPT') {
+          var src = event.target.getAttribute('src') || '';
+          if (src.indexOf('flutter_bootstrap.js') !== -1) {
+            showError('تعذر تحميل ملف التشغيل. تحقق من الاتصال ثم أعد المحاولة.');
           }
         }
-        
-        // Remove minified function names that aren't helpful
-        cleaned = cleaned.replace(/\$\$\w+/g, '<anonymous>');
-        cleaned = cleaned.replace(/minified:\w+/g, '<minified>');
-        
-        return cleaned || frame; // Return original if cleaning resulted in empty string
-      } catch (error) {
-        return frame; // Return original frame if cleaning fails
-      }
-    }
-    
-    /**
-     * Improved error formatting for better debugging
-     */
-    function formatError(error, stackTrace) {
-      const platform = navigator.userAgent.includes('Mobile') ? 'Mobile Web' : 'Web';
-      const timestamp = new Date().toISOString();
-      
-      return {
-        error: `${error}\nPlatform: ${platform}`,
-        stackTrace: demangleStackTrace(stackTrace),
-        timestamp: timestamp,
-        userAgent: navigator.userAgent
-      };
-    }
-
-    /**
-     * Update loading progress and text
-     */
-    function updateLoadingProgress(progress, text) {
-      const progressFill = document.querySelector('.progress-fill');
-      const loadingText = document.querySelector('.loading-text');
-      
-      if (progressFill) {
-        progressFill.style.width = `${progress}%`;
-      }
-      
-      if (loadingText && text) {
-        loadingText.textContent = text;
-      }
-      
-      loadingState.progress = progress;
-    }
-
-    /**
-     * Show error state
-     */
-    function showError(message) {
-      const errorContainer = document.getElementById('error-container');
-      const errorText = errorContainer.querySelector('p');
-      
-      if (errorText) {
-        errorText.textContent = message;
-      }
-      
-      errorContainer.style.display = 'block';
-      loadingState.error = message;
-    }
-
-    /**
-     * Hide error state
-     */
-    function hideError() {
-      const errorContainer = document.getElementById('error-container');
-      errorContainer.style.display = 'none';
-      loadingState.error = null;
-    }
-
-    /**
-     * Retry loading
-     */
-    function retryLoading() {
-      hideError();
-      loadingState.isLoading = true;
-      loadingState.progress = 0;
-      
-      // Reload the page
-      window.location.reload();
-    }
-
-    /**
-     * Hide loading screen when Flutter is ready
-     */
-    function hideLoadingScreen() {
-      const loadingScreen = document.getElementById('loading-screen');
-      if (loadingScreen) {
-        loadingScreen.classList.add('flutter-ready');
-        
-        // Remove loading screen after animation
-        setTimeout(() => {
-          loadingScreen.remove();
-        }, 500);
-      }
-      
-      performanceMetrics.flutterReady = Date.now();
-      performanceMetrics.totalLoadTime = performanceMetrics.flutterReady - performanceMetrics.loadStart;
-      
-      console.log(`🚀 Flutter app loaded in ${performanceMetrics.totalLoadTime}ms`);
-    }
-
-    /**
-     * Initialize loading sequence
-     */
-    function initializeLoading() {
-      // Simulate loading progress
-      let progress = 0;
-      const loadingSteps = [
-        'Initializing Flutter engine...',
-        'Loading application assets...',
-        'Preparing user interface...',
-        'Establishing connections...',
-        'Almost ready...'
-      ];
-      
-      const progressInterval = setInterval(() => {
-        progress += Math.random() * 15;
-        const stepIndex = Math.floor(progress / 20);
-        const text = loadingSteps[Math.min(stepIndex, loadingSteps.length - 1)];
-        
-        updateLoadingProgress(Math.min(progress, 95), text);
-        
-        if (progress >= 95) {
-          clearInterval(progressInterval);
-        }
-      }, 200);
-    }
-
-    /**
-     * Check if Flutter is ready
-     */
-    function checkFlutterReady() {
-      if (window.flutter_inappwebview || window.flutter_web_optimizer) {
-        hideLoadingScreen();
-        return true;
-      }
-      
-      // Check for Flutter app container
-      const flutterContainer = document.querySelector('#flutter_target');
-      if (flutterContainer && flutterContainer.children.length > 0) {
-        hideLoadingScreen();
-        return true;
-      }
-      
-      return false;
-    }
-
-    /**
-     * Setup Flutter ready detection
-     */
-    function setupFlutterDetection() {
-      // Check periodically for Flutter readiness
-      const checkInterval = setInterval(() => {
-        if (checkFlutterReady()) {
-          clearInterval(checkInterval);
-        }
-      }, 100);
-
-      // Also listen for Flutter events
-      window.addEventListener('flutter-first-frame', () => {
-        hideLoadingScreen();
-      });
-
-      // Fallback timeout
-      setTimeout(() => {
-        if (loadingState.isLoading) {
-          console.warn('Flutter loading timeout, attempting to hide loading screen');
-          hideLoadingScreen();
-        }
-      }, 10000); // 10 second timeout
-    }
-
-    /**
-     * Initialize everything when DOM is ready
-     */
-    document.addEventListener('DOMContentLoaded', () => {
-      initializeLoading();
-      setupFlutterDetection();
-      
-      // Performance monitoring
-      if ('performance' in window) {
-        window.addEventListener('load', () => {
-          const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-          console.log(`📊 Page load time: ${loadTime}ms`);
-        });
-      }
-    });
-
-    // Make functions available globally
-    window.demangleStackTrace = demangleStackTrace;
-    window.formatError = formatError;
-    window.hideLoadingScreen = hideLoadingScreen;
-    window.showError = showError;
-    window.retryLoading = retryLoading;
+      }, true);
+    })();
   </script>
+
+  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
