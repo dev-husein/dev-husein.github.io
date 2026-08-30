@@ -178,13 +178,6 @@
       display: none;
     }
 
-    /* Keep the HTML camera preview visible on Flutter web. */
-    flt-platform-view,
-    flt-platform-view video {
-      position: relative;
-      z-index: 1;
-    }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -290,20 +283,6 @@
           }
         }
       }, true);
-
-      // Flutter web can leave camera canvases off-screen (white scanner).
-      var canvasObserver = new MutationObserver(function () {
-        var glassPane = document.querySelector('flt-glass-pane');
-        if (!glassPane || !glassPane.shadowRoot) {
-          return;
-        }
-        glassPane.shadowRoot.querySelectorAll('flt-canvas-container').forEach(function (container) {
-          if (container.style.position !== 'absolute') {
-            container.style.position = 'absolute';
-          }
-        });
-      });
-      canvasObserver.observe(document.documentElement, { childList: true, subtree: true });
     })();
   </script>
 
