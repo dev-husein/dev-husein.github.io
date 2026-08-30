@@ -323,6 +323,286 @@
     })();
   </script>
 
+  <!--
+    Camera barcode overlay outside Flutter's canvas.
+    HtmlElementView previews are often covered on Flutter 3.4x+; this mounts
+    a real DOM layer above flt-glass-pane instead.
+  -->
+  <script>
+    (function () {
+      var OVERLAY_ID = 'pharmacy-barcode-overlay';
+      var ZXING_SCRIPT_ID = 'pharmacy-zxing-library';
+          var ZXING_SRC = 'https://unpkg.com/@zxing/library@0.23.0/umd/index.min.js';
+      var active = null;
+
+      function stopStream(stream) {
+        if (!stream) return;
+        stream.getTracks().forEach(function (track) {
+          try { track.stop(); } catch (_) {}
+        });
+      }
+
+      function removeOverlay() {
+        var existing = document.getElementById(OVERLAY_ID);
+        if (existing && existing.parentNode) {
+          existing.parentNode.removeChild(existing);
+        }
+      }
+
+      function loadZxing() {
+        if (window.ZXing && window.ZXing.BrowserMultiFormatReader) {
+          return Promise.resolve(window.ZXing);
+        }
+        return new Promise(function (resolve, reject) {
+          var existing = document.getElementById(ZXING_SCRIPT_ID);
+          if (existing) {
+            existing.addEventListener('load', function () { resolve(window.ZXing); });
+            existing.addEventListener('error', function () {
+              reject(new Error('تعذر تحميل مكتبة قراءة الباركود'));
+            });
+            return;
+          }
+          var script = document.createElement('script');
+          script.id = ZXING_SCRIPT_ID;
+          script.src = ZXING_SRC;
+          script.async = true;
+          script.onload = function () { resolve(window.ZXing); };
+          script.onerror = function () {
+            reject(new Error('تعذر تحميل مكتبة قراءة الباركود'));
+          };
+          document.head.appendChild(script);
+        });
+      }
+
+      function closeInternal(result) {
+        if (!active) return;
+        var session = active;
+        active = null;
+        if (session.rafId) {
+          cancelAnimationFrame(session.rafId);
+        }
+        if (session.codeReader && typeof session.codeReader.reset === 'function') {
+          try { session.codeReader.reset(); } catch (_) {}
+        }
+        stopStream(session.stream);
+        removeOverlay();
+        if (typeof session.onDone === 'function') {
+          session.onDone(result || '');
+        }
+      }
+
+      function buildOverlay() {
+        removeOverlay();
+        var root = document.createElement('div');
+        root.id = OVERLAY_ID;
+        root.setAttribute('dir', 'rtl');
+        root.style.cssText = [
+          'position:fixed',
+          'inset:0',
+          'z-index:2147483000',
+          'background:#000',
+          'display:flex',
+          'flex-direction:column',
+          'font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif'
+        ].join(';');
+
+        var topBar = document.createElement('div');
+        topBar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:12px 16px;color:#fff;position:relative;z-index:2;';
+
+        var closeBtn = document.createElement('button');
+        closeBtn.type = 'button';
+        closeBtn.setAttribute('aria-label', 'إغلاق');
+        closeBtn.textContent = '✕';
+        closeBtn.style.cssText = 'background:rgba(255,255,255,0.15);border:0;color:#fff;width:44px;height:44px;border-radius:22px;font-size:20px;cursor:pointer;';
+        closeBtn.addEventListener('click', function () { closeInternal(''); });
+
+        var title = document.createElement('div');
+        title.textContent = 'مسح الباركود';
+        title.style.cssText = 'font-size:16px;font-weight:600;';
+
+        topBar.appendChild(closeBtn);
+        topBar.appendChild(title);
+        topBar.appendChild(document.createElement('div'));
+
+        var stage = document.createElement('div');
+        stage.style.cssText = 'flex:1;position:relative;overflow:hidden;background:#000;';
+
+        var video = document.createElement('video');
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('autoplay', 'true');
+        video.muted = true;
+        video.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;';
+
+        var guide = document.createElement('div');
+        guide.style.cssText = [
+          'position:absolute',
+          'left:50%',
+          'top:50%',
+          'width:min(72vw,320px)',
+          'height:min(40vw,180px)',
+          'transform:translate(-50%,-50%)',
+          'border:2px solid rgba(255,255,255,0.75)',
+          'border-radius:12px',
+          'box-shadow:0 0 0 9999px rgba(0,0,0,0.35)',
+          'pointer-events:none'
+        ].join(';');
+
+        var hint = document.createElement('div');
+        hint.textContent = 'وجّه الكاميرا نحو الباركود';
+        hint.style.cssText = 'position:absolute;left:0;right:0;bottom:48px;text-align:center;color:rgba(255,255,255,0.9);font-size:16px;z-index:2;';
+
+        var status = document.createElement('div');
+        status.id = OVERLAY_ID + '-status';
+        status.style.cssText = 'position:absolute;left:16px;right:16px;top:72px;text-align:center;color:#fff;font-size:14px;z-index:2;';
+        status.textContent = 'جاري تشغيل الكاميرا...';
+
+        stage.appendChild(video);
+        stage.appendChild(guide);
+        stage.appendChild(hint);
+        stage.appendChild(status);
+        root.appendChild(topBar);
+        root.appendChild(stage);
+        document.body.appendChild(root);
+
+        return { root: root, video: video, status: status };
+      }
+
+      function setStatus(text) {
+        var el = document.getElementById(OVERLAY_ID + '-status');
+        if (el) el.textContent = text || '';
+      }
+
+      function startBarcodeDetectorLoop(video) {
+        var detector = new BarcodeDetector({
+          formats: [
+            'ean_13', 'ean_8', 'code_128', 'code_39', 'upc_a', 'upc_e',
+            'qr_code', 'data_matrix', 'itf', 'codabar'
+          ]
+        });
+        var busy = false;
+
+        function tick() {
+          if (!active) return;
+          active.rafId = requestAnimationFrame(tick);
+          if (busy || video.readyState < 2) return;
+          busy = true;
+          detector.detect(video).then(function (codes) {
+            busy = false;
+            if (!active || !codes || !codes.length) return;
+            var value = (codes[0].rawValue || '').trim();
+            if (value) closeInternal(value);
+          }).catch(function () {
+            busy = false;
+          });
+        }
+
+        setStatus('');
+        tick();
+      }
+
+      function startZxing(video, stream) {
+        return loadZxing().then(function (ZXing) {
+          if (!ZXing || !ZXing.BrowserMultiFormatReader) {
+            throw new Error('مكتبة قراءة الباركود غير متاحة');
+          }
+          var reader = new ZXing.BrowserMultiFormatReader();
+          active.codeReader = reader;
+          setStatus('');
+          var onResult = function (result, err) {
+            if (!active || err || !result) return;
+            var value = String(result.getText ? result.getText() : result.text || '').trim();
+            if (value) closeInternal(value);
+          };
+          if (typeof reader.decodeFromStream === 'function') {
+            return reader.decodeFromStream(stream, video, onResult);
+          }
+          return reader.decodeFromVideoDevice(undefined, video, onResult);
+        });
+      }
+
+      function openScanner(onDone) {
+        if (typeof onDone !== 'function') {
+          onDone = function () {};
+        }
+        if (active) {
+          closeInternal('');
+        }
+
+        if (!window.isSecureContext) {
+          onDone('');
+          return Promise.resolve({
+            ok: false,
+            error: 'مسح الباركود يتطلب اتصال HTTPS آمن'
+          });
+        }
+
+        var mediaDevices = navigator.mediaDevices;
+        if (!mediaDevices || typeof mediaDevices.getUserMedia !== 'function') {
+          onDone('');
+          return Promise.resolve({
+            ok: false,
+            error: 'هذا المتصفح لا يدعم الكاميرا'
+          });
+        }
+
+        var ui = buildOverlay();
+        active = {
+          stream: null,
+          video: ui.video,
+          onDone: onDone,
+          rafId: 0,
+          codeReader: null
+        };
+
+        var constraints = {
+          audio: false,
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
+
+        return mediaDevices.getUserMedia(constraints).then(function (stream) {
+          if (!active) {
+            stopStream(stream);
+            return { ok: false, error: 'تم إلغاء المسح' };
+          }
+          active.stream = stream;
+          ui.video.srcObject = stream;
+          return ui.video.play().catch(function () {}).then(function () {
+            if (!active) return { ok: false, error: 'تم إلغاء المسح' };
+            if ('BarcodeDetector' in window) {
+              startBarcodeDetectorLoop(ui.video);
+              return { ok: true };
+            }
+            return startZxing(ui.video, stream).then(function () {
+              return { ok: true };
+            });
+          });
+        }).catch(function (err) {
+          var message = 'تعذر تشغيل الكاميرا. تحقق من الصلاحيات ثم أعد المحاولة';
+          var name = err && err.name ? String(err.name) : '';
+          if (name === 'NotAllowedError' || name === 'PermissionDeniedError') {
+            message = 'يرجى السماح بالوصول إلى الكاميرا من إعدادات المتصفح ثم إعادة المحاولة';
+          } else if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+            message = 'مسح الباركود غير مدعوم على هذا الجهاز أو المتصفح';
+          }
+          setStatus(message);
+          stopStream(active && active.stream);
+          // Keep overlay so user can close after reading the error.
+          return { ok: false, error: message };
+        });
+      }
+
+      window.__pharmacyBarcodeScanner = {
+        open: openScanner,
+        close: function () { closeInternal(''); },
+        isOpen: function () { return !!active; }
+      };
+    })();
+  </script>
+
   <script src="flutter_bootstrap.js" async crossorigin="anonymous"></script>
 </body>
 </html>
